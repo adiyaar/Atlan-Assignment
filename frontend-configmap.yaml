@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-configmap
+data:
+  frontend-config: |
+    {
+      "apiUrl": "http://backend-service:3000/api"
+    }

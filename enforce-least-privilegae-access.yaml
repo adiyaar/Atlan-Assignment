@@ -1,0 +1,13 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerPrivileged
+metadata:
+  name: enforce-least-privilege-access
+spec:
+  match:
+    kinds:
+      - Deployment
+      - StatefulSet
+  parameters:
+    namespaces:
+      - default
+    privileged: false

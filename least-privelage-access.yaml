@@ -1,0 +1,30 @@
+
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: least-privilege-access
+spec:
+  crd:
+    spec:
+      names:
+        kind: LeastPrivilegeAccess
+      validation:
+        openAPIV3Schema:
+          properties:
+            namespaces:
+              type: array
+              items:
+                type: string
+            privileged:
+              type: boolean
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package least_privilege_access
+
+        violation[{"msg": msg, "details": {"kind": kind, "name": name}}] {
+          input.review.object.kind == kind
+          input.review.object.metadata.name == name
+          input.review.object.spec.containers[_].securityContext.privileged == true
+          msg := "Containers in " + kind + " " + name + " are running in privileged mode."
+        }
